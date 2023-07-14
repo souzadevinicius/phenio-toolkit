@@ -1,0 +1,24 @@
+{
+  "template": "https://github.com/monarch-initiative/monarch-project-template",
+  "commit": "8f2d0813fea1e927d1ee1947188ebca511fcd23d",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "phenio_toolkit",
+      "github_org_name": "monarch_initiative",
+      "__project_slug": "phenio_toolkit",
+      "project_description": "This is the project description.",
+      "min_python_version": "3.9",
+      "file_name": "main",
+      "greeting_recipient": "World",
+      "full_name": "Vinicius de Souza",
+      "email": "souzadevinicius@gmail.com",
+      "__author": "Vinicius de Souza <souzadevinicius@gmail.com>",
+      "license": "MIT",
+      "github_token_for_doc_deployment": "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",
+      "github_token_for_pypi_deployment": "pypi-AgEIcHlwaS5vcmcCJDdlYTA5NTAyLWQ5NmMtNGQ4Yi1hMWIyLTFhN2ZjOWQ3YTRmNQACKlszLCI4NjZhNTg0NS0xMGU2LTRjODAtYjMzOC1lNzA2MzdlMzY4MDciXQAABiASWRfU6y2NPyjXMaQfhpjA9pD3a4g0Lhua5zX46JJpVA",
+      "_template": "https://github.com/monarch-initiative/monarch-project-template"
+    }
+  },
+  "directory": null
+}

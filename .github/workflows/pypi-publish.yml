@@ -1,0 +1,36 @@
+name: Publish Python Package
+
+on:
+  workflow_dispatch:
+  release:
+    types: [created]
+    
+jobs:
+  build-n-publish:
+    name: Build and publish Python 🐍 distributions 📦 to PyPI
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3.0.2
+
+      - name: Set up Python
+        uses: actions/setup-python@v3.1.2
+        with:
+          python-version: 3.9
+
+      - name: Install Poetry
+        run: pip install poetry poetry-dynamic-versioning
+    
+      - name: Install dependencies
+        run: poetry install --no-interaction
+
+      - name: Build source and wheel archives
+        run: poetry build
+
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.5.0
+        with:
+          user: __token__
+          password: ${{ secrets.pypi-AgEIcHlwaS5vcmcCJDdlYTA5NTAyLWQ5NmMtNGQ4Yi1hMWIyLTFhN2ZjOWQ3YTRmNQACKlszLCI4NjZhNTg0NS0xMGU2LTRjODAtYjMzOC1lNzA2MzdlMzY4MDciXQAABiASWRfU6y2NPyjXMaQfhpjA9pD3a4g0Lhua5zX46JJpVA }}
+
+    

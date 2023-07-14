@@ -1,0 +1,63 @@
+[tool.poetry]
+name = "phenio-toolkit"
+version = "0.0.0"
+description = "phenio-toolkit"
+authors = ["Vinicius de Souza <souzadevinicius@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "phenio_toolkit", from = "src"}]
+
+
+
+[tool.poetry.dependencies]
+python = "^3.9"
+click = ">=8.1.3"
+importlib-metadata = "^4.8.0"
+pandas = "^2.0.1"
+oaklib = "^0.5.6"
+curies = "^0.5.6"
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+tox = "^3.25.1"
+sphinx = {version = "^5.3.0", extras = ["docs"]}
+sphinx-rtd-theme = {version = "^1.0.0", extras = ["docs"]}
+sphinx-autodoc-typehints = {version = "^1.19.4", extras = ["docs"]}
+sphinx-click = {version = "^4.3.0", extras = ["docs"]}
+myst-parser = {version = "^0.18.1", extras = ["docs"]}
+mkdocs = {version = "^1.4.2", extras = ["docs"]}
+
+
+[tool.poetry.scripts]
+phenio-toolkit = "phenio_toolkit.cli:phenio"
+
+[tool.poetry.extras]
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+    "sphinx-autodoc-typehints",
+    "sphinx-click",
+    "myst-parser",
+    "mkdocs"
+    ]
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "pep440"
+
+[tool.black]
+line-length = 100
+target-version = ["py38", "py39", "py310"]
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 100
+include_trailing_comma = true
+reverse_relative = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry_dynamic_versioning.backend"
