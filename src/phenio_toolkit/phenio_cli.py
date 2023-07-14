@@ -31,7 +31,7 @@ from phenio_toolkit.mapping.lexical_mapping import LexicalMapping
     show_default=True,
     multiple=True,
     type=click.Choice(["abnormally", "abnormal", "aberrant", "variant"], case_sensitive=False),
-    help="Stop Word",
+    help="Phenotypic Effect Terms: The terms passed in this parameter will be removed and the word 'abnormal' will be prepended the label",
 )
 @click.option(
     "--output",
