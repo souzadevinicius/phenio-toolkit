@@ -120,6 +120,7 @@ class LexicalMapping:
         return df_maps
 
     def generate_mapping_files(self, output):
+        "generate_mapping_files."
         df, df_label, dfl = self._load_upheno_mappings()
         l = df_label[~df_label["iri"].astype(str).str.startswith(UPHENO_PREFIX)]
         d = self._preprocess_labels(df)
@@ -166,8 +167,12 @@ class LexicalMapping:
         converter = get_obo_converter()
         [converter.pd_compress(df_m, c) for c in ["p1", "p2"]]
 
-        df_m["subject_source"] = df_m["p1"].apply(lambda x: re.sub(r'\b\w+:(\d+)\b', r'obo:\1', str(x).lower()))
-        df_m["object_source"] = df_m["p2"].apply(lambda x: re.sub(r'\b\w+:(\d+)\b', r'obo:\1', str(x).lower()))
+        df_m["subject_source"] = df_m["p1"].apply(
+            lambda x: re.sub(r"\b\w+:(\d+)\b", r"obo:\1", str(x).lower())
+        )
+        df_m["object_source"] = df_m["p2"].apply(
+            lambda x: re.sub(r"\b\w+:(\d+)\b", r"obo:\1", str(x).lower())
+        )
 
         df_m["mapping_justification"] = df_m["cat"].map(
             {

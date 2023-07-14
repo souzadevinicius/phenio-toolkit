@@ -1,6 +1,4 @@
-"""
-Monarch Initiative
-"""
+"""Monarch Initiative."""
 from pathlib import Path
 from typing import List
 
@@ -46,5 +44,6 @@ from phenio_toolkit.mapping.lexical_mapping import LexicalMapping
 def lexical_mapping_command(
     species_lexical: Path, mapping_logical: Path, phenotypic_effect_terms: List[str], output: Path
 ) -> None:
+    """lexical_mapping_command"""
     lm = LexicalMapping(species_lexical, mapping_logical, stopwords=phenotypic_effect_terms)
     lm.generate_mapping_files(output)

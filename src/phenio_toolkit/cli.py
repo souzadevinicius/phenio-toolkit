@@ -4,7 +4,7 @@ import logging
 import click
 
 from phenio_toolkit import __version__
-from phenio_toolkit.phenio_cli import cross_species_exact_matches, lexical_mapping_command
+from phenio_toolkit.phenio_cli import lexical_mapping_command
 
 __all__ = [
     "main",
@@ -35,10 +35,9 @@ def main(verbose: int, quiet: bool):
 
 @click.group()
 def phenio():
-    """phenio"""
+    """Phenio."""
 
 
-phenio.add_command(cross_species_exact_matches)
 phenio.add_command(lexical_mapping_command)
 
 
