@@ -1,8 +1,8 @@
 import os
 import re
-from pathlib import Path
 from typing import List
 
+import curies
 import pandas as pd
 from curies import get_obo_converter
 
@@ -69,14 +69,15 @@ class LexicalMapping:
 
     def _preprocess_labels(self, df):
         df["label"] = df["label"].astype(str)
-        df["label_pp"] = df["label"].str.replace(r"[(][A-Z]+[)]", "")
+        df["label_pp"] = df["label"].apply(lambda x: re.sub(r"[(][A-Z]+[)]", "", x))
         df["label_pp"] = df["label_pp"].str.lower()
-        df["label_pp"] = df["label_pp"].str.replace(r"[^0-9a-z' ]", "")
+        df["label_pp"] = df["label_pp"].apply(lambda x: re.sub(r"[^0-9a-z' ]", "", x))
 
         df["label_pp"] = df["label_pp"].apply(lambda x: self._apply_stopword(x))
 
         df["label_pp"] = df["label_pp"].str.strip()
-        df["label_pp"] = df["label_pp"].str.replace(r"[ ]+", " ")
+        df.dropna(subset=["label_pp"], inplace=True)
+        df["label_pp"] = df["label_pp"].apply(lambda x: re.sub(r"[\s]+", " ", x))
         df = df[~df["iri"].astype(str).str.startswith(UPHENO_PREFIX)]
         df = df[df["label_pp"] != ""]
         d = df[["iri", "label_pp"]]
@@ -123,6 +124,7 @@ class LexicalMapping:
         "generate_mapping_files."
         df, df_label, dfl = self._load_upheno_mappings()
         l = df_label[~df_label["iri"].astype(str).str.startswith(UPHENO_PREFIX)]
+        # track match field, then add to the final table
         d = self._preprocess_labels(df)
         dd = d.groupby("label")["iri"].apply(list).to_dict()
         file_names = [
@@ -164,16 +166,33 @@ class LexicalMapping:
         df_m = df_m.drop(["iri", "cat_x", "cat_y"], axis=1)
         df_m["cat"] = df_m["cat"].str.replace(r"(^nan-)|(-nan$)", "", regex=True)
 
-        converter = get_obo_converter()
-        [converter.pd_compress(df_m, c) for c in ["p1", "p2"]]
-
-        df_m["subject_source"] = df_m["p1"].apply(
-            lambda x: re.sub(r"\b\w+:(\d+)\b", r"obo:\1", str(x).lower())
+        obo_converter = curies.get_obo_converter()
+        custom_converter = curies.Converter(
+                [curies.Record(
+                    prefix="MGPO",
+                    prefix_synonyms=[],
+                    uri_prefix="http://purl.obolibrary.org/obo/MGPO_",
+                    uri_prefix_synonyms=[],
+                )]
         )
-        df_m["object_source"] = df_m["p2"].apply(
-            lambda x: re.sub(r"\b\w+:(\d+)\b", r"obo:\1", str(x).lower())
+        converter = curies.chain([obo_converter,custom_converter])
+
+
+        df_m["subject_id"] = df_m.apply(
+            lambda x: converter.compress_or_standardize(x["p1"]), axis=1
         )
 
+        df_m["object_id"] = df_m.apply(lambda x: converter.compress_or_standardize(x["p2"]), axis=1)
+
+        df_m["subject_source"] = df_m.apply(
+            lambda x: f"obo:{str(x['subject_id']).split(':', maxsplit=1)[0].lower()}", axis=1
+        )
+
+        df_m["object_source"] = df_m.apply(
+            lambda x: f"obo:{str(x['object_id']).split(':', maxsplit=1)[0].lower()}", axis=1
+        )
+
+        #
         df_m["mapping_justification"] = df_m["cat"].map(
             {
                 "lexical": "semapv:LexicalMatching",
@@ -188,9 +207,9 @@ class LexicalMapping:
 
         df_m = df_m.rename(
             columns={
-                "p1": "subject_id",
+                # "p1": "subject_id",
                 "label_x": "subject_label",
-                "p2": "object_id",
+                # "p2": "object_id",
                 "label_y": "object_label",
             }
         )[

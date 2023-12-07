@@ -1,5 +1,5 @@
 UPHENO_DIR = upheno-release
-FILES = upheno_species_lexical.csv upheno_mapping_logical.csv
+FILES = upheno_species_lexical.csv upheno_mapping_logical.csv upheno_all_with_relations.owl
 
 .PHONY: download
 
