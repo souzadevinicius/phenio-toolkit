@@ -354,24 +354,23 @@ files = [
 
 [[package]]
 name = "curies"
-version = "0.5.6"
+version = "0.7.4"
 description = "Idiomatic conversion between URIs and compact URIs (CURIEs)."
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "curies-0.5.6-py3-none-any.whl", hash = "sha256:27eee34218bf645fdfb5c457bacfba0274146277bac600d9b9a83d2e5e01abcd"},
-    {file = "curies-0.5.6.tar.gz", hash = "sha256:fd9e72ea9b167911057726bd537c9956ed96d88ce71aecf59f9a47c6ca484ffe"},
+    {file = "curies-0.7.4-py3-none-any.whl", hash = "sha256:478f1818345988933d8bc6060f80a985401331f856ff8cf9bd98fa00d178ad39"},
+    {file = "curies-0.7.4.tar.gz", hash = "sha256:d3aaf16644b26ac2605ff83c565ec7df0ba0b5f7425516047666e609ec5fb718"},
 ]
 
 [package.dependencies]
-pydantic = "<2.0"
+pydantic = "*"
 pytrie = "*"
 requests = "*"
 
 [package.extras]
-bioregistry = ["bioregistry (>=0.5.136)"]
-docs = ["sphinx (<7.0)", "sphinx-autodoc-typehints", "sphinx-automodapi", "sphinx-rtd-theme"]
+docs = ["sphinx", "sphinx-automodapi", "sphinx-rtd-theme"]
 fastapi = ["defusedxml", "fastapi", "httpx", "python-multipart", "uvicorn"]
 flask = ["defusedxml", "flask"]
 pandas = ["pandas"]
@@ -3676,4 +3675,4 @@ docs = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "1b9155ac54b719cae105ed88998ffce43758af8ea8488a96b7857ed7ccbf63cf"
+content-hash = "c94349b5efc7303218c613e9f7bf3b142b917b279847055ef1b3f6cd9fb879f0"
