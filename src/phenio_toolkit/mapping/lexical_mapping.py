@@ -4,7 +4,6 @@ from typing import List
 
 import curies
 import pandas as pd
-from curies import get_obo_converter
 
 UPHENO_PREFIX = "http://purl.obolibrary.org/obo/UPHENO_"
 OBO_PREFIX = "http://purl.obolibrary.org/obo/"
@@ -50,6 +49,7 @@ class LexicalMapping:
         for stopword in self.stopwords:
             if value and stopword in value:
                 return "abnormal " + value.replace(stopword, "")
+            return value
 
     def _load_upheno_mappings(self):
         df = pd.read_csv(self.upheno_species_lexical)
@@ -168,15 +168,16 @@ class LexicalMapping:
 
         obo_converter = curies.get_obo_converter()
         custom_converter = curies.Converter(
-                [curies.Record(
+            [
+                curies.Record(
                     prefix="MGPO",
                     prefix_synonyms=[],
                     uri_prefix="http://purl.obolibrary.org/obo/MGPO_",
                     uri_prefix_synonyms=[],
-                )]
+                )
+            ]
         )
-        converter = curies.chain([obo_converter,custom_converter])
-
+        converter = curies.chain([obo_converter, custom_converter])
 
         df_m["subject_id"] = df_m.apply(
             lambda x: converter.compress_or_standardize(x["p1"]), axis=1
