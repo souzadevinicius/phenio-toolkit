@@ -45,11 +45,11 @@ class LexicalMapping:
         self.upheno_mapping_logical = upheno_mapping_logical
         self.stopwords = stopwords
 
-    def _apply_stopword(self, value):
+    def _apply_stopword(self, label):
         for stopword in self.stopwords:
-            if value and stopword in value:
-                return "abnormal " + value.replace(stopword, "")
-            return value
+            if label and stopword in label:
+                return "abnormal " + label.replace(stopword, "")
+        return label
 
     def _load_upheno_mappings(self):
         df = pd.read_csv(self.upheno_species_lexical)
