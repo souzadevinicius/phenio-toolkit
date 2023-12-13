@@ -44,6 +44,19 @@ class LexicalMapping:
         self.upheno_species_lexical = upheno_species_lexical
         self.upheno_mapping_logical = upheno_mapping_logical
         self.stopwords = stopwords
+        obo_converter = curies.get_obo_converter()
+        custom_converter = curies.Converter(
+            [
+                curies.Record(
+                    prefix="MGPO",
+                    prefix_synonyms=[],
+                    uri_prefix="http://purl.obolibrary.org/obo/MGPO_",
+                    uri_prefix_synonyms=[],
+                )
+            ]
+        )
+        self.converter = curies.chain([obo_converter, custom_converter])
+
 
     def _apply_stopword(self, label):
         for stopword in self.stopwords:
@@ -66,6 +79,11 @@ class LexicalMapping:
         df_label = df[df["p"] == "http://www.w3.org/2000/01/rdf-schema#label"][["iri", "label"]]
         df_label.columns = ["iri", "label"]
         return df, df_label, dfl
+
+    def _are_terms_from_same_ontology(self, row):
+        subject_prefix = row["subject_id"].split(":", maxsplit=1)[0]
+        object_prefix = row["object_id"].split(":", maxsplit=1)[0]
+        return subject_prefix == object_prefix
 
     def _preprocess_labels(self, df):
         df["label"] = df["label"].astype(str)
@@ -101,7 +119,7 @@ class LexicalMapping:
                     iris.extend(dd.get(lab))
                     done.add(lab)
             iris = list(set(iris))
-            if len(iris) > 1:
+            if len(iris) > 1 :
                 pairs = _pairwise(iris)
                 for pair in pairs:
                     data.append([pair[0], pair[1]])
@@ -166,24 +184,12 @@ class LexicalMapping:
         df_m = df_m.drop(["iri", "cat_x", "cat_y"], axis=1)
         df_m["cat"] = df_m["cat"].str.replace(r"(^nan-)|(-nan$)", "", regex=True)
 
-        obo_converter = curies.get_obo_converter()
-        custom_converter = curies.Converter(
-            [
-                curies.Record(
-                    prefix="MGPO",
-                    prefix_synonyms=[],
-                    uri_prefix="http://purl.obolibrary.org/obo/MGPO_",
-                    uri_prefix_synonyms=[],
-                )
-            ]
-        )
-        converter = curies.chain([obo_converter, custom_converter])
 
         df_m["subject_id"] = df_m.apply(
-            lambda x: converter.compress_or_standardize(x["p1"]), axis=1
+            lambda x: self.converter.compress_or_standardize(x["p1"]), axis=1
         )
 
-        df_m["object_id"] = df_m.apply(lambda x: converter.compress_or_standardize(x["p2"]), axis=1)
+        df_m["object_id"] = df_m.apply(lambda x: self.converter.compress_or_standardize(x["p2"]), axis=1)
 
         df_m["subject_source"] = df_m.apply(
             lambda x: f"obo:{str(x['subject_id']).split(':', maxsplit=1)[0].lower()}", axis=1
@@ -225,4 +231,7 @@ class LexicalMapping:
                 "mapping_justification",
             ]
         ]
+        df_m = df_m[~df_m.apply(self._are_terms_from_same_ontology, axis=1)]
+
+
         df_m.to_csv(mapping_all, sep="\t", index=False)

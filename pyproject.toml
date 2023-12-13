@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "phenio-toolkit"
-version = "0.1.4"
+version = "0.1.5"
 description = "phenio-toolkit"
 authors = ["Vinicius de Souza <souzadevinicius@gmail.com>"]
 license = "MIT"
